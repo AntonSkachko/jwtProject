@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: jwtProject
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/jwt_project
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: biVwuDArznuQcj1Qc7Xu
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  signing:
+    key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
