@@ -2,7 +2,11 @@ package org.bsuir.jwtproject.config;
 
 import lombok.RequiredArgsConstructor;
 import org.bsuir.jwtproject.config.filter.JwtAuthenticationFilter;
+import org.bsuir.jwtproject.model.User;
+import org.bsuir.jwtproject.model.enums.Role;
+import org.bsuir.jwtproject.repository.UserRepository;
 import org.bsuir.jwtproject.service.UserService;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +20,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -23,38 +30,43 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                // отключение csrf, так как мы используем обычный jwt,
+                // и дополнительно csrf token уже излишне
+                .csrf(AbstractHttpConfigurer::disable)
+
                 // Своего рода отключение CORS (разрешение запросов со всех доменов)
-                .cors(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(request -> {
-//                    var corsConfiguration = new CorsConfiguration();
-//                    corsConfiguration.setAllowedOriginPatterns(List.of("*"));
-//                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//                    corsConfiguration.setAllowedHeaders(List.of("*"));
-//                    corsConfiguration.setAllowCredentials(true);
-//                    return corsConfiguration;
-//                }))
+                // .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedHeaders(List.of("*"));
+                    corsConfiguration.setAllowCredentials(true);
+                    return corsConfiguration;
+                }))
 
                 // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(request -> request
                         // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
+                // это строчка отвечает за стратегию управления сеансами
+                // по условию нам нужно создать RESTful api, где состояние сессии не должно сохраняться
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
 
+                // добавление службы аутенитфикации пользователей
                 .authenticationProvider(authenticationProvider())
-                .formLogin(login -> login
-                                .loginPage("/auth/sign-in")
-                                .successForwardUrl("/example/get").permitAll())
+
+                // добавление jwt фильтра, который обрабатывается наши запросы с jwt
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -73,8 +85,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-            throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public ApplicationRunner dataLoader(
+            UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            if (userRepository.findByUsername("admin").isEmpty()) {
+                userRepository.save(
+                        new User(1L, "admin", passwordEncoder.encode("admin"), Role.ROLE_ADMIN));
+            }
+        };
     }
 }
