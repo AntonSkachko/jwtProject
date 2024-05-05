@@ -19,6 +19,11 @@
     password: <Тут находиться пароль>
 
 ```
+видео по созданию схемы: 
+
+
+https://github.com/AntonSkachko/jwtProject/assets/63850442/fc27cbc8-bb65-42c2-9e54-f00deb205e8d
+
 
 Далее мы протестируем работу нашего проекта:
 
