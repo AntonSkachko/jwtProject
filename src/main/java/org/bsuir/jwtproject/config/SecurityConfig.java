@@ -2,11 +2,7 @@ package org.bsuir.jwtproject.config;
 
 import lombok.RequiredArgsConstructor;
 import org.bsuir.jwtproject.config.filter.JwtAuthenticationFilter;
-import org.bsuir.jwtproject.model.User;
-import org.bsuir.jwtproject.model.enums.Role;
-import org.bsuir.jwtproject.repository.UserRepository;
 import org.bsuir.jwtproject.service.UserService;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,6 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -88,16 +85,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public ApplicationRunner dataLoader(
-            UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        return args -> {
-            if (userRepository.findByUsername("admin").isEmpty()) {
-                userRepository.save(
-                        new User(1L, "admin", passwordEncoder.encode("admin"), Role.ROLE_ADMIN));
-            }
-        };
     }
 }

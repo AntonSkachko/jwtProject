@@ -9,10 +9,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository repository;
+    private final UserRepository userRepository;
 
     /**
      * Сохранение пользователя
@@ -71,15 +74,16 @@ public class UserService {
     }
 
 
+    public List<User> getAllUsers() {
+        return repository.findAll();
+    }
     /**
      * Выдача прав администратора текущему пользователю
      * <p>
      * Нужен для демонстрации
      */
-    @Deprecated
-    public void getAdmin() {
-        var user = getCurrentUser();
+    public User setAdmin(User user) {
         user.setRole(Role.ROLE_ADMIN);
-        save(user);
+        return save(user);
     }
 }

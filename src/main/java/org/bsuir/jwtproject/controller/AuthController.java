@@ -7,27 +7,28 @@ import lombok.RequiredArgsConstructor;
 import org.bsuir.jwtproject.model.AuthRequest;
 import org.bsuir.jwtproject.model.JwtAuthenticationResponse;
 import org.bsuir.jwtproject.service.AuthenticationService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 @Tag(name = "Аутентификация")
 public class AuthController {
     private final AuthenticationService authenticationService;
 
-    @Operation(summary = "Регистрация пользователя")
     @PostMapping("/sign-up")
-    public JwtAuthenticationResponse signUp(@RequestBody @Valid AuthRequest request) {
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Регистрация пользователя")
+    public JwtAuthenticationResponse signUp(
+            @RequestBody @Valid AuthRequest request) {
         return authenticationService.signUp(request);
     }
 
-    @Operation(summary = "Авторизация пользователя")
     @PostMapping("/sign-in")
-    public JwtAuthenticationResponse signIn(@RequestBody @Valid AuthRequest request) {
+    @Operation(summary = "Авторизация пользователя")
+    public JwtAuthenticationResponse signIn(
+            @RequestBody @Valid AuthRequest request) {
         return authenticationService.signIn(request);
     }
 }

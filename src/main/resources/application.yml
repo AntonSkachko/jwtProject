@@ -8,6 +8,7 @@ spring:
     username: root
     password: biVwuDArznuQcj1Qc7Xu
 
+# это нужно будет закомитить на шагу 5
   jpa:
     hibernate:
       ddl-auto: create
@@ -15,6 +16,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+# -----------------------------------
 
 jwt:
   signing:

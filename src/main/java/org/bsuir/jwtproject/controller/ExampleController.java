@@ -25,6 +25,12 @@ public class ExampleController {
         return exampleRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Получение прмера по id")
+    public Example exampleById(@PathVariable Long id) {
+        return exampleRepository.findById(id).orElse(null);
+    }
+
     @PostMapping
     @Operation(summary = "Добавление в пример")
     @ResponseStatus(HttpStatus.CREATED)
