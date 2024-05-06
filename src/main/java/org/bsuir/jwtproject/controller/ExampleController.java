@@ -39,11 +39,11 @@ public class ExampleController {
         return exampleRepository.save(example);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @Operation(summary = "Удаление примера")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteExample(Long id) {
+    public void deleteExample(@PathVariable Long id) {
         exampleRepository.deleteById(id);
     }
 }
