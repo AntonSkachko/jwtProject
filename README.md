@@ -19,11 +19,9 @@
     password: <Тут находиться пароль>
 
 ```
-видео по созданию схемы: 
+Далее нужно подключиться к базе данных в нашей ide и создать там схему, видео по созданию datasource и схемы в Intellij: 
 
-
-https://github.com/AntonSkachko/jwtProject/assets/63850442/fc27cbc8-bb65-42c2-9e54-f00deb205e8d
-
+https://github.com/AntonSkachko/jwtProject/assets/63850442/485a8502-9ec5-479f-8269-60081261da3f
 
 Далее мы протестируем работу нашего проекта:
 
