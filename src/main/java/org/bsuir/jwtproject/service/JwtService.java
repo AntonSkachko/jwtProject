@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bsuir.jwtproject.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +18,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Setter
 @Service
 @RequiredArgsConstructor
 public class JwtService {
 
+    /**
+     * -- SETTER --
+     *  Создание set метода для jwtSigningKey,
+     *  так как я не знаю как в тестах указывать полям значение
+     *
+     * @param jwtSigningKey нужный нам токен
+     *
+     */
     @Value("${jwt.signing.key}")
     private String jwtSigningKey;
 
@@ -128,4 +138,5 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSigningKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
 }

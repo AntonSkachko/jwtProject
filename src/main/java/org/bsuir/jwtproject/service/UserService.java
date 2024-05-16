@@ -14,18 +14,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository repository;
-    private final UserRepository userRepository;
-
-    /**
-     * Сохранение пользователя
-     *
-     * @return сохраненный пользователь
-     */
-    public User save(User user) {
-        return repository.save(user);
-    }
-
 
     /**
      * Создание пользователя
@@ -85,5 +75,14 @@ public class UserService {
     public User setAdmin(User user) {
         user.setRole(Role.ROLE_ADMIN);
         return save(user);
+    }
+
+    /**
+     * Сохранение пользователя
+     *
+     * @return сохраненный пользователь
+     */
+    private User save(User user) {
+        return repository.save(user);
     }
 }

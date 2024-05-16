@@ -1,7 +1,9 @@
+# название проекта (ни на что не влияет)
 spring:
   application:
-    name: jwtProject
+    name: apple
 
+# подключение к локальной базе данных MySQL
   datasource:
     url: jdbc:mysql://localhost:3306/jwt_project
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -9,6 +11,7 @@ spring:
     password: biVwuDArznuQcj1Qc7Xu
 
 # это нужно будет закомитить на шагу 5
+# нужен для создания базы данных каждый раз, когда приложение запускается
   jpa:
     hibernate:
       ddl-auto: create
@@ -19,6 +22,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
 # -----------------------------------
 
+# ключ подписи нашего jwt (разработчик ленивый и не захотел писать через rsa)
 jwt:
   signing:
     key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
