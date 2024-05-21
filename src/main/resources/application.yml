@@ -14,7 +14,7 @@ spring:
 # нужен для создания базы данных каждый раз, когда приложение запускается
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

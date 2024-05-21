@@ -2,17 +2,22 @@ package org.bsuir.jwtproject.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "example")
-public class Example {
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "products")
+public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "example_id_seq")
-    @SequenceGenerator(name = "example_id_seq", sequenceName = "example_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     private String name;
     private String description;
+    @NotNull
+    private Double price;
 }
